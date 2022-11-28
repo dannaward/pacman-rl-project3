@@ -97,7 +97,22 @@ def constructBayesNet(gameState):
     variableDomainsDict = {}
 
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    for house in gameState.getPossibleHouses():
+        for wall in gameState.getHouseWalls(house):
+            obsVars.append(OBS_VAR_TEMPLATE % wall)
+            edges.extend([(FOOD_HOUSE_VAR, OBS_VAR_TEMPLATE % wall),
+                          (GHOST_HOUSE_VAR, OBS_VAR_TEMPLATE % wall)])
+            variableDomainsDict[OBS_VAR_TEMPLATE % wall] = OBS_VALS
+
+    edges.extend([(X_POS_VAR, FOOD_HOUSE_VAR),
+                  (Y_POS_VAR, FOOD_HOUSE_VAR),
+                  (X_POS_VAR, GHOST_HOUSE_VAR),
+                  (Y_POS_VAR, GHOST_HOUSE_VAR)])
+
+    variableDomainsDict[X_POS_VAR] = X_POS_VALS
+    variableDomainsDict[Y_POS_VAR] = Y_POS_VALS
+    variableDomainsDict[FOOD_HOUSE_VAR] = HOUSE_VALS
+    variableDomainsDict[GHOST_HOUSE_VAR] = HOUSE_VALS
     "*** END YOUR CODE HERE ***"
 
     variables = [X_POS_VAR, Y_POS_VAR] + HOUSE_VARS + obsVars
