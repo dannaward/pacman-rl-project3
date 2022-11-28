@@ -102,18 +102,21 @@ def joinFactors(factors):
 
 
     "*** YOUR CODE HERE ***"
-    conditionedSet = set()
-    unconditionedSet = set()
+    # conditionedVar = set()
+    # unconditionedVar = set()
+    #
+    # for factor in factors:
+    #     for condition in factor.conditionedVariables():
+    #         conditionedVar.add(condition)
+    #     for unconditioned in factor.unconditionedVariables():
+    #         unconditionedVar.add(unconditioned)
 
-    for factor in factors:
-        conditionedSet.add(conditioned for conditioned in factor.conditionedVariables())
-        unconditionedSet.add(unconditioned for unconditioned in factor.unconditionedVariables())
+    conditionedVar = functools.reduce(lambda x, y: x | y, [set(factor.conditionedVariables()) for factor in factors])
+    unconditionedVar = functools.reduce(lambda x, y: x | y, [set(factor.unconditionedVariables()) for factor in factors])
 
-    for var in unconditionedSet:
-        if var in conditionedSet:
-            conditionedSet.remove(var)
+    conditionedVar = set(var for var in conditionedVar if var not in unconditionedVar)
 
-    newFactor = Factor(unconditionedSet, conditionedSet, factors[0].variableDomainsDict())
+    newFactor = Factor(unconditionedVar, conditionedVar, list(factors)[0].variableDomainsDict())
 
     for assignment in newFactor.getAllPossibleAssignmentDicts():
         newFactor.setProbability(assignment, 1.0)
